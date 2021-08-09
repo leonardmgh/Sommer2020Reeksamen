@@ -6,6 +6,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -64,18 +65,31 @@ namespace CVEViewerWPF.ViewModels
             if (dialog.ShowDialog(App.Current.MainWindow) == true)
             {
                 _filePath = dialog.FileName;
-                try
-                {
-                    CSVReader.ReadFile(_filePath, out ObservableCollection<CVE> tmp);
-                    CVES = tmp;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Kunne ikke åbne fil", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.DoWork += ReadFileWorker;
+                worker.RunWorkerCompleted += ReadFileComplete;
             }
         });
 
+        private void ReadFileWorker(object sender,
+        DoWorkEventArgs e)
+        {
+            var path = (string)e.Argument;
+            CSVReader.ReadFile(path, out ObservableCollection<CVE> tmp);            
+            e.Result = tmp;
+        }
+        private void ReadFileComplete(
+            object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.Message);
+            }
+            else if (!e.Cancelled)
+            {
+                CVES = (ObservableCollection<CVE>)e.Result;
+            }
+        }
 
     }
 

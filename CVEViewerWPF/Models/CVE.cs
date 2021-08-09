@@ -55,13 +55,13 @@ namespace CVEViewerWPF.Models
             }
         }
 
-        public String Phase
+        public string Phase
         {
             get { return _phase; }
             set { SetProperty(ref _phase, value); }
         }
 
-        public String Votes
+        public string Votes
         {
             get { return _votes; }
             set { SetProperty(ref _votes, value); }
