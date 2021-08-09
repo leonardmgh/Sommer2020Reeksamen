@@ -8,15 +8,10 @@ using System.Threading.Tasks;
 
 namespace CVEViewerWPF.Models
 {
-    public enum Status
-    {
-        Canidate,
-        Entry
-    }
     class CVE : BindableBase
     {
         private string _name;
-        private Status _status;
+        private string _status;
         private string _description;
         private readonly ObservableCollection<string> _references;
         private string _phase;
@@ -35,7 +30,7 @@ namespace CVEViewerWPF.Models
             set { SetProperty(ref _name, value); }
         }
 
-        public Status Status
+        public string Status
         {
             get { return _status; }
             set { SetProperty(ref _status, value); }

@@ -10,20 +10,21 @@ using System.Threading.Tasks;
 
 namespace CVEViewerWPF.Helpers
 {
-    class CollectionConverter : DefaultTypeConverter
+    class CollectionConverter : ITypeConverter
     {
-        public override ObservableCollection<string> ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
+
             var subs = text.Split("|");
             ObservableCollection<string> data = new();
             foreach (var item in subs)
             {
-                data.Add(item);
+                data.Add((string)item);
             }
             return data;
         }
 
-        public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
             throw new NotImplementedException();
         }
