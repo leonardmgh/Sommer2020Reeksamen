@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sommer2021Reeksamen", "Sommer2021Reeksamen\Sommer2021Reeksamen.csproj", "{967C8107-47F1-498B-95FE-F3B3EC4AE80F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVEViewerWPF", "CVEViewerWPF\CVEViewerWPF.csproj", "{C71CA1E9-F4CB-4071-BE9E-148237950A3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{967C8107-47F1-498B-95FE-F3B3EC4AE80F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{967C8107-47F1-498B-95FE-F3B3EC4AE80F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{967C8107-47F1-498B-95FE-F3B3EC4AE80F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{967C8107-47F1-498B-95FE-F3B3EC4AE80F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C71CA1E9-F4CB-4071-BE9E-148237950A3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C71CA1E9-F4CB-4071-BE9E-148237950A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C71CA1E9-F4CB-4071-BE9E-148237950A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C71CA1E9-F4CB-4071-BE9E-148237950A3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
