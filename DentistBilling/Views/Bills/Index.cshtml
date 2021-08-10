@@ -22,7 +22,10 @@
                 @Html.DisplayNameFor(model => model.Costumer.CPRNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BillMaker.EmployeeNumber)
+                Name
+            </th>
+            <th>
+                Employee
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.TotalCostumer)
@@ -36,33 +39,37 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BillDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Costumer.CPRNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BillMaker.EmployeeNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalCostumer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalInsureance)
-                </td>
-                <td>
-                </td>
-                <td>
-                    <a asp-action="AddItem" asp-route-id="@item.ID">Add Billable Item</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BillDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Costumer.CPRNumber)
+            </td>
+            <td>
+                @{ string fullname = item.Costumer.FirstName + " " + item.Costumer.LastName;}
+                @Html.DisplayFor(modelItem => fullname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BillMaker.EmployeeNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalCostumer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalInsureance)
+            </td>
+            <td>
+            </td>
+            <td>
+                <a asp-controller="BillToItems" asp-action="AddItem" asp-route-id="@item.ID">Add Billable Item</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
         }
 
     </tbody>

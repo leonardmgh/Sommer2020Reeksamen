@@ -19,143 +19,48 @@ namespace DentistBilling.Controllers
             _context = context;
         }
 
-        // GET: BillToItems
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.BillToItem.Include(b => b.Bill).Include(b => b.BillableItem);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: BillToItems/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> AddItem(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var billToItem = await _context.BillToItem
-                .Include(b => b.Bill)
-                .Include(b => b.BillableItem)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (billToItem == null)
+            var bill = await _context.Bill.FindAsync(id);
+            if (bill == null)
             {
                 return NotFound();
             }
-
-            return View(billToItem);
+            var BillableItem = new BillToItem
+            {
+                BillID = bill.ID,
+            };
+            return View(BillableItem);
         }
 
-        // GET: BillToItems/Create
-        public IActionResult Create()
-        {
-            ViewData["BillID"] = new SelectList(_context.Bill, "ID", "ID");
-            ViewData["ItemID"] = new SelectList(_context.BillableItems, "ID", "Description");
-            return View();
-        }
-
-        // POST: BillToItems/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,BillID,Counter,ItemID")] BillToItem billToItem)
+        public async Task<IActionResult> AddItem([Bind("BillID,ItemID,Counter")] BillToItem data)
         {
+            Bill bill;
             if (ModelState.IsValid)
             {
-                _context.Add(billToItem);
+                bill = await _context.Bill.Include(p => p.Items).Include(p => p.Costumer).FirstOrDefaultAsync(m => m.ID == data.BillID);
+                bill.Items.Add(data);
+                var item = await _context.BillableItems.FirstOrDefaultAsync(m => m.ID == data.ItemID);
+                bill.TotalCostumer += item.CostumerPart * data.Counter;
+                if (bill.Costumer.Insured)
+                {
+                    bill.TotalInsureance += item.InsurancePart * data.Counter;
+                }
+                else
+                {
+                    bill.TotalCostumer += item.InsurancePart * data.Counter;
+                }
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Bills", new { id = data.BillID });
             }
-            ViewData["BillID"] = new SelectList(_context.Bill, "ID", "ID", billToItem.BillID);
-            ViewData["ItemID"] = new SelectList(_context.BillableItems, "ID", "Description", billToItem.ItemID);
-            return View(billToItem);
-        }
-
-        // GET: BillToItems/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var billToItem = await _context.BillToItem.FindAsync(id);
-            if (billToItem == null)
-            {
-                return NotFound();
-            }
-            ViewData["BillID"] = new SelectList(_context.Bill, "ID", "ID", billToItem.BillID);
-            ViewData["ItemID"] = new SelectList(_context.BillableItems, "ID", "Description", billToItem.ItemID);
-            return View(billToItem);
-        }
-
-        // POST: BillToItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,BillID,Counter,ItemID")] BillToItem billToItem)
-        {
-            if (id != billToItem.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(billToItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BillToItemExists(billToItem.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BillID"] = new SelectList(_context.Bill, "ID", "ID", billToItem.BillID);
-            ViewData["ItemID"] = new SelectList(_context.BillableItems, "ID", "Description", billToItem.ItemID);
-            return View(billToItem);
-        }
-
-        // GET: BillToItems/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var billToItem = await _context.BillToItem
-                .Include(b => b.Bill)
-                .Include(b => b.BillableItem)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (billToItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(billToItem);
-        }
-
-        // POST: BillToItems/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var billToItem = await _context.BillToItem.FindAsync(id);
-            _context.BillToItem.Remove(billToItem);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Bills", new { id = data.BillID });
         }
 
         private bool BillToItemExists(int id)
