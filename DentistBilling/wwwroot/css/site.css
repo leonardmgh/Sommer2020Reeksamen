@@ -51,6 +51,12 @@ button.accept-policy {
   line-height: inherit;
 }
 
+/* Other stiles*/
+
+.highlight-item {
+    background-color: #6c757d ;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

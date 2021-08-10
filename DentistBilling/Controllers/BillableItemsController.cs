@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DentistBilling.Data;
 using DentistBilling.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace DentistBilling.Controllers
 {
-    [Authorize]
-    public class BillableItemsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BillableItemsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
@@ -21,130 +21,83 @@ namespace DentistBilling.Controllers
             _context = context;
         }
 
-        // GET: BillableItems
-        public async Task<IActionResult> Index()
+        // GET: api/BillableItems1
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BillableItems>>> GetBillableItems()
         {
-            return View(await _context.BillableItems.ToListAsync());
+            return await _context.BillableItems.ToListAsync();
         }
 
-        // GET: BillableItems/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/BillableItems1/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BillableItems>> GetBillableItems(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var billableItems = await _context.BillableItems
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (billableItems == null)
-            {
-                return NotFound();
-            }
-
-            return View(billableItems);
-        }
-
-        // GET: BillableItems/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: BillableItems/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Description,CostumerPart,InsurancePart")] BillableItems billableItems)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(billableItems);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(billableItems);
-        }
-
-        // GET: BillableItems/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var billableItems = await _context.BillableItems.FindAsync(id);
+
             if (billableItems == null)
             {
                 return NotFound();
             }
-            return View(billableItems);
+
+            return billableItems;
         }
 
-        // POST: BillableItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Description,CostumerPart,InsurancePart")] BillableItems billableItems)
+        // PUT: api/BillableItems1/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBillableItems(int id, BillableItems billableItems)
         {
             if (id != billableItems.ID)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(billableItems).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(billableItems);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BillableItemsExists(billableItems.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(billableItems);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BillableItemsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: BillableItems/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/BillableItems1
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<BillableItems>> PostBillableItems(BillableItems billableItems)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.BillableItems.Add(billableItems);
+            await _context.SaveChangesAsync();
 
-            var billableItems = await _context.BillableItems
-                .FirstOrDefaultAsync(m => m.ID == id);
+            return CreatedAtAction("GetBillableItems", new { id = billableItems.ID }, billableItems);
+        }
+
+        // DELETE: api/BillableItems1/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBillableItems(int id)
+        {
+            var billableItems = await _context.BillableItems.FindAsync(id);
             if (billableItems == null)
             {
                 return NotFound();
             }
 
-            return View(billableItems);
-        }
-
-        // POST: BillableItems/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var billableItems = await _context.BillableItems.FindAsync(id);
             _context.BillableItems.Remove(billableItems);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool BillableItemsExists(int id)

@@ -1,0 +1,46 @@
+﻿<div class="modal " tabindex="-1" role="dialog" id="billableItes">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Billable Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table" v-if="!isLoading">
+                    <thead>
+                        <tr>
+                            <th>
+                               Item ID
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Insurance Amount
+                            </th>
+                            <th>
+                                Costumer Amount
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="billableItems" id="itemsTable">
+                        <tr v-for="(item, index) in billableItems">
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.costumerPart }}</td>
+                            <td>{{ item.insurancePart }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div v-if="isLoading">
+                    Loading Data...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Luk</button>
+            </div>
+        </div>
+    </div>
+</div>

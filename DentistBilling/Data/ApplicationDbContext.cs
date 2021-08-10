@@ -61,7 +61,7 @@ namespace DentistBilling.Data
                 new BillableItems{
                     ID = 3,
                     Description = "Super service",
-                    CostumerPart = 100,
+                    CostumerPart = 200,
                     InsurancePart = 100,
                 },
 
@@ -184,5 +184,7 @@ namespace DentistBilling.Data
         public DbSet<DentistBilling.Models.BillableItems> BillableItems { get; set; }
 
         public DbSet<DentistBilling.Models.Costumer> Costumer { get; set; }
+
+        public DbSet<DentistBilling.Models.BillToItem> BillToItem { get; set; }
     }
 }

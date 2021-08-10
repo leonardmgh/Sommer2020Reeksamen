@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,7 @@ namespace DentistBilling.Models
 
         [Required(ErrorMessage = "Description can not be empty!")]
         [Display(Name = "Billing Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTimeOffset BillDate { get; set; }
 
         [Required(ErrorMessage = "Items can not be empty!")]
@@ -25,18 +27,15 @@ namespace DentistBilling.Models
         [Required]
         public int CostumerID { get; set; }
 
-        [Required(ErrorMessage = "Costumer can not be empty!")]
         [Display(Name = "Costumer")]
         public Costumer Costumer { get; set; }
 
         [Display(Name = "Bill maker")]
         public ApplicationUser BillMaker { get; set; }
 
-        [Required]
         [Display(Name = "Total Costumer")]
         public double TotalCostumer { get; set; }
 
-        [Required]
         [Display(Name = "Total Insurance")]
         public double TotalInsureance { get; set; }
     }

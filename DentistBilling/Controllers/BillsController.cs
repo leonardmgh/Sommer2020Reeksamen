@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DentistBilling.Data;
 using DentistBilling.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace DentistBilling.Controllers
 {
@@ -56,7 +57,7 @@ namespace DentistBilling.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,BillDate")] Bill bill)
+        public async Task<IActionResult> Create([Bind("ID,BillDate,CostumerID")] Bill bill)
         {
             if (ModelState.IsValid)
             {
@@ -65,6 +66,50 @@ namespace DentistBilling.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(bill);
+        }
+
+        public async Task<IActionResult> AddItem(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bill = await _context.Bill.FindAsync(id);
+            if (bill == null)
+            {
+                return NotFound();
+            }
+            var BillableItem = new BillToItem
+            {
+                BillID = bill.ID,
+            };
+            return View(BillableItem);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddItem([Bind("BillID,ItemID,Counter")] BillToItem data)
+        {
+            Bill bill;
+            if (ModelState.IsValid)
+            {
+                bill = await _context.Bill.Include(p => p.Items).Include(p => p.Costumer).FirstOrDefaultAsync(m => m.ID == data.BillID);
+                bill.Items.Add(data);
+                var item = await _context.BillableItems.FirstOrDefaultAsync(m => m.ID == data.ItemID);
+                bill.TotalCostumer += item.CostumerPart * data.Counter;
+                if (bill.Costumer.Insured)
+                {
+                    bill.TotalInsureance += item.InsurancePart * data.Counter;
+                }
+                else
+                {
+                    bill.TotalCostumer += item.InsurancePart * data.Counter;
+                }
+                await _context.SaveChangesAsync();
+                return View(bill);
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Bills/Edit/5
