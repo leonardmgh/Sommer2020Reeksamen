@@ -19,6 +19,7 @@
         <DockPanel Name="MainDockPanel">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Open _file" Command="{Binding OpenFileCommand}" />
+                <MenuItem Header="Easter Egg" Command="{Binding AddWindowCommand}" />
             </Menu>
             <Grid>
                 <Grid.ColumnDefinitions>

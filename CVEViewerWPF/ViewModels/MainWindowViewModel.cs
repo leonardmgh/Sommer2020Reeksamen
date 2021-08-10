@@ -1,5 +1,6 @@
 ﻿using CVEViewerWPF.Models;
 using CVEViewerWPF.Repository;
+using CVEViewerWPF.Views;
 using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -65,9 +66,8 @@ namespace CVEViewerWPF.ViewModels
             if (dialog.ShowDialog(App.Current.MainWindow) == true)
             {
                 _filePath = dialog.FileName;
-                BackgroundWorker worker = new BackgroundWorker();
-                worker.DoWork += ReadFileWorker;
-                worker.RunWorkerCompleted += ReadFileComplete;
+                CSVReader.ReadFile(_filePath, out ObservableCollection<CVE> tmp);
+                CVES = tmp;
             }
         });
 
@@ -90,6 +90,17 @@ namespace CVEViewerWPF.ViewModels
                 CVES = (ObservableCollection<CVE>)e.Result;
             }
         }
+
+        DelegateCommand _addWindow;
+        public DelegateCommand AddWindowCommand => _addWindow ??= new DelegateCommand(() => {
+            var vm = new FunnyPictureViewModel();
+
+            var view = new FunnyPicture()
+            {
+                DataContext = vm
+            };
+            view.Show();
+        });
 
     }
 

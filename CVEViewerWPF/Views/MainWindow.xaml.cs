@@ -24,5 +24,9 @@ namespace CVEViewerWPF
         {
             InitializeComponent();
         }
+        void OnLoad(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }
